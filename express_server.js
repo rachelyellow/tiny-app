@@ -12,7 +12,12 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+function generateRandomString() {
 
+  let randomString = () => Math.random().toString(36).substring(2, 8)
+  return randomString;
+
+}
 
 
 
@@ -36,7 +41,10 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-
+app.post("/urls", (req, res) => {
+  console.log(req.body);  // debug statement to see POST parameters
+  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+});
 
 
 // app.get("/urls.json", (req, res) => {
