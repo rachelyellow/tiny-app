@@ -39,25 +39,21 @@ app.get("/urls/:id", (req, res) => {
 
 app.post("/urls", (req, res) => {
   console.log(req.body);  // debug statement to see POST parameters
-  const shortURL = generateRandomString();
+  let shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
   let templateVars = { longURL: req.body.longURL, shortURL: shortURL }
   // res.send(templateVars);
-  res.redirect(301, `urls/${shortURL}`);
-  console.log(urlDatabase);      // Respond with 'Ok' (we will replace this)
+  res.redirect(`urls/${shortURL}`);
+  console.log(urlDatabase);
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  let longURL = urlDatabase[req.params.shortURL];
+  console.log(longURL);
+  res.redirect(longURL);
 });
 
 
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
-
-
-
-// app.get("/hello", (req, res) => {
-//   let templateVars = { greeting: 'Hello World!' };
-//   res.render("hello_world", templateVars);
-// });
 
 
 app.listen(PORT, () => {
