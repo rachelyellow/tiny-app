@@ -12,12 +12,8 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-function generateRandomString() {
+generateRandomString = () => Math.random().toString(36).substring(2, 8)
 
-  let randomString = () => Math.random().toString(36).substring(2, 8)
-  return randomString;
-
-}
 
 
 
@@ -43,7 +39,12 @@ app.get("/urls/:id", (req, res) => {
 
 app.post("/urls", (req, res) => {
   console.log(req.body);  // debug statement to see POST parameters
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  const shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL;
+  let templateVars = { longURL: req.body.longURL, shortURL: shortURL }
+  // res.send(templateVars);
+  res.redirect(301, `urls/${shortURL}`);
+  console.log(urlDatabase);      // Respond with 'Ok' (we will replace this)
 });
 
 
