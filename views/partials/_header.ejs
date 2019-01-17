@@ -2,10 +2,18 @@
 
 <title>TinyApp</title>
 
+<% if (username === undefined) {%>
+
 <form action="/login" method="POST" style="margin:30px;">
 
     <label for="username">Username: </label>
     <input type="text" name="username">
-    <button>Submit</button>
+    <button>Login</button>
 
 </form>
+
+<% } else { %>
+
+<%=username%>
+
+<% } %>
