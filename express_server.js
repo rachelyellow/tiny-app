@@ -117,14 +117,33 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  const newId = generateRandomString();
-  users[newId] = {
-    id: newId,
-    email: req.body.email,
-    password: req.body.password
-  };
-  res.cookie('user_id', users[newId]['id']);
-  res.redirect('/urls');
+  if (req.body.email === '' || req.body.password === '') {
+
+    res.status(400).send('Invalid input!');
+
+  } else {
+
+    for (user in users) {
+
+      if (users[user]['email'] === req.body.email) {
+
+        res.status(400).send('User already registered!');
+
+      }
+    }
+
+      const newId = generateRandomString();
+
+      users[newId] = {
+        id: newId,
+        email: req.body.email,
+        password: req.body.password
+      };
+
+      res.cookie('user_id', users[newId]['id']);
+      res.redirect('/urls');
+
+  }
 });
 
 
