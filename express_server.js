@@ -56,7 +56,7 @@ app.get("/urls/new", (req, res) => {
     'user_id': req.cookies['user_id']
   };
 
-  res.render("urls_new");
+  res.render("urls_new", templateVars);
 });
 
 app.get("/register", (req, res) => {
@@ -129,25 +129,17 @@ app.post("/urls/:id/edit", (req, res) => {
 
 app.post("/login", (req, res) => {
 
-  console.log(users);
-  const combinationExists = function () {
     for (user in users) {
       let userEmail = users[user]['email'];
       let userPassword = users[user]['password'];
       if (req.body.email === userEmail && req.body.password === userPassword) {
-        return true;
+        res.cookie('user_id', users[user]['id']);
+        res.redirect('/');
       }
     }
-  };
 
-  if (combinationExists) {
-    res.cookie('user_id', users[user]['id']);
-    res.redirect('/');
-  } else {
-    res.status(403).send('Please register before logging in.');
-  }
-
-});
+    res.status(403).send('Invalid username and password combination.');
+  });
 
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id');
