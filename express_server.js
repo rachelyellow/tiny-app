@@ -93,7 +93,7 @@ app.get("/urls/:id", (req, res) => {
 
   let templateVars = {
     shortURL: req.params.id,
-    longURL: urlDatabase[req.params.id],
+    longURL: urlDatabase[req.cookies['user_id']][req.params.id],
     user: users[req.cookies['user_id']],
     'user_id': req.cookies['user_id']
   };
@@ -131,7 +131,7 @@ app.post("/urls/:id/delete", (req, res) => {
 
 
 app.post("/urls/:id/edit", (req, res) => {
-  urlDatabase[req.params.id] = req.body.longURL;
+  urlDatabase[req.cookies['user_id']][req.params.id] = req.body.longURL;
   res.redirect('/urls');
 });
 
