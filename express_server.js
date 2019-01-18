@@ -11,7 +11,7 @@ app.set('view engine', 'ejs');
 
 
 const urlDatabase = {
-  default: {
+  userRandomID: {
     "b2xVn2": "http://www.lighthouselabs.ca",
     "9sm5xK": "http://www.google.com",
   }
@@ -44,7 +44,7 @@ app.get("/urls", (req, res) => {
 
 
   let templateVars = {
-    urls: urlDatabase,
+    urls: urlDatabase[req.cookies['user_id']],
     user: users[req.cookies['user_id']],
     'user_id': req.cookies['user_id']
   };
@@ -89,6 +89,8 @@ app.get("/login", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
 
+// let user = req.cookies[]
+
   let templateVars = {
     shortURL: req.params.id,
     longURL: urlDatabase[req.params.id],
@@ -112,8 +114,7 @@ app.get(`/urls/:id/edit`, (req, res) => {
 
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
-
+  urlDatabase[req.cookies['user_id']][shortURL] = req.body.longURL;
   let templateVars = {
     longURL: req.body.longURL,
     shortURL: shortURL
