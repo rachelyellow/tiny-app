@@ -35,6 +35,8 @@ const users = {
 
 generateRandomString = () => Math.random().toString(36).substring(2, 8)
 
+urlsForUser = (id) => urlDatabase[id]
+
 
 app.get("/", (req, res) => {
   res.send("Welcome!");
@@ -51,7 +53,7 @@ app.get("/urls", (req, res) => {
 
   //ignore existing cookies if they don't correspond with a user in user database
   if (users[req.cookies['user_id']] === undefined) {
-    res.redirect('/login');
+    res.send('Please log in or register.');
   } else {
     res.render("urls_index", templateVars);
   }
@@ -73,37 +75,39 @@ app.get("/urls/new", (req, res) => {
 
 });
 
-app.get("/register", (req, res) => {
-  res.render("register-user");
-});
-
-app.get("/login", (req, res) => {
-
-  let templateVars = {
-    user: users[req.cookies['user_id']],
-    user_id: req.cookies['user_id']
-  };
-
-  res.render('user_login', templateVars);
-});
 
 app.get("/urls/:id", (req, res) => {
 
-// let user = req.cookies[]
+  let urlsUser = urlsForUser(req.cookies['user_id'])
 
-  let templateVars = {
-    shortURL: req.params.id,
-    longURL: urlDatabase[req.cookies['user_id']][req.params.id],
-    user: users[req.cookies['user_id']],
-    'user_id': req.cookies['user_id']
-  };
+  //checks if user is logged in
+  if (urlsUser)
+  {
+    //checks if the url belongs to the user logged in
+    if (req.params.id in urlsUser)
+    {
+       let templateVars = {
+        shortURL: req.params.id,
+        longURL: urlsUser[req.params.id],
+        user: users[req.cookies['user_id']]
+      };
 
-  res.render("urls_show", templateVars);
+      return res.render("urls_show", templateVars);
+    }
+  }
+  res.status(403).send('Invalid link.');
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL];
-  res.redirect(longURL);
+
+  for (let username in urlDatabase) {
+    for (let key in urlDatabase[username]) {
+      if (req.params.shortURL in urlDatabase[username]) {
+        res.redirect(urlDatabase[username][req.params.shortURL]);
+     }
+    }
+  }
+  res.status(403).send('The link you requested is invalid, or expired.');
 });
 
 app.get(`/urls/:id/edit`, (req, res) => {
@@ -125,30 +129,43 @@ app.post("/urls", (req, res) => {
 
 app.post("/urls/:id/delete", (req, res) => {
   let shortURL = req.params.id;
-  delete urlDatabase[shortURL];
+  delete urlDatabase[req.cookies['user_id']][shortURL];
   res.redirect('/urls');
 });
 
 
 app.post("/urls/:id/edit", (req, res) => {
-  urlDatabase[req.cookies['user_id']][req.params.id] = req.body.longURL;
-  res.redirect('/urls');
+  if (req.params.id in urlsForUser(req.cookies['user_id'])) {
+    urlDatabase[req.cookies['user_id']][req.params.id] = req.body.longURL;
+    res.redirect('/urls');
+  } else {
+    res.status(403).send('Invalid link.');
+  }
+});
+
+app.get("/register", (req, res) => {
+  res.render("register-user");
+});
+
+app.get("/login", (req, res) => {
+  res.clearCookie('user_id');
+  res.render('user_login');
 });
 
 app.post("/login", (req, res) => {
 
-    for (user in users) {
-      let userEmail = users[user]['email'];
-      let userPassword = users[user]['password'];
-      if (req.body.email === userEmail && req.body.password === userPassword) {
-        res.cookie('user_id', users[user]['id']);
-        res.redirect('/');
-      }
+  for (user in users) {
+    let userEmail = users[user]['email'];
+    let userPassword = users[user]['password'];
+    if (req.body.email === userEmail && req.body.password === userPassword) {
+      res.cookie('user_id', users[user]['id']);
+      res.redirect('/urls');
     }
-
+  }
     res.status(403).send('Invalid username and password combination.');
   });
 
+//LoGOUT
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id');
   res.redirect('urls');
@@ -177,6 +194,8 @@ app.post("/register", (req, res) => {
         email: req.body.email,
         password: req.body.password
       };
+
+      urlDatabase[newId] = {};
 
       res.cookie('user_id', users[newId]['id']);
       res.redirect('/urls');
