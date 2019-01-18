@@ -40,13 +40,19 @@ app.get("/", (req, res) => {
 
 app.get("/urls", (req, res) => {
 
+
   let templateVars = {
     urls: urlDatabase,
     user: users[req.cookies['user_id']],
     'user_id': req.cookies['user_id']
   };
 
-  res.render("urls_index", templateVars);
+  //ignore existing cookies if they don't correspond with a user in user database
+  if (users[req.cookies['user_id']] === undefined) {
+    res.redirect('/login');
+  } else {
+    res.render("urls_index", templateVars);
+  }
 });
 
 app.get("/urls/new", (req, res) => {
@@ -56,7 +62,13 @@ app.get("/urls/new", (req, res) => {
     'user_id': req.cookies['user_id']
   };
 
-  res.render("urls_new", templateVars);
+  //ignore existing cookies if they don't correspond with a user in user database
+  if (users[req.cookies['user_id']] === undefined) {
+    res.redirect('/login');
+  } else {
+    res.render("urls_new", templateVars);
+  }
+
 });
 
 app.get("/register", (req, res) => {
