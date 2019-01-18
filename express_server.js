@@ -11,8 +11,10 @@ app.set('view engine', 'ejs');
 
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  default: {
+    "b2xVn2": "http://www.lighthouselabs.ca",
+    "9sm5xK": "http://www.google.com",
+  }
 };
 
 
@@ -81,14 +83,7 @@ app.get("/login", (req, res) => {
     user: users[req.cookies['user_id']],
     user_id: req.cookies['user_id']
   };
-  // for (user in users) {
-  //   let user_id = users[user]['id'];
-  //   let userEmail = users[user]['email'];
-  //   let userPassword = users[user]['password'];
-  //   if (req.body.email === userEmail && req.body.password === userPassword) {
-  //     res.cookie('user_id', user_id);
-  //   }
-  // }
+
   res.render('user_login', templateVars);
 });
 
