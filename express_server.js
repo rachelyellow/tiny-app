@@ -45,7 +45,7 @@ urlsForUser = (id) => urlDatabase[id]
 
 
 app.get("/", (req, res) => {
-  res.send("Welcome!");
+  res.redirect('/login');
 });
 
 app.get("/urls", (req, res) => {
@@ -117,7 +117,7 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get(`/urls/:id/edit`, (req, res) => {
-  res.redirect('/urls');
+  res.redirect(`/urls/${req.params.id}`);
 });
 
 
@@ -202,7 +202,7 @@ app.post("/register", (req, res) => {
 
       urlDatabase[newId] = {};
       req.session.user_id = users[newId]['id'];
-      res.redirect('/urls');
+      res.redirect('/urls/new');
 
   }
 });

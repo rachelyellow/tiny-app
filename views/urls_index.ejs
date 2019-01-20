@@ -6,13 +6,20 @@
   <body>
       <% include partials/_header %>
       <ul>
+
+        Your shortened URLS: <br/><br/>
+
         <% for (url in urls) { %>
           <li><%= urls[url] %> - <%= url %></li>
-          <form method="POST" action="/urls/<%=url%>/delete">
+          <form method="POST" action="/urls/<%=url%>/delete" style="margin:5px;>
             <button type="submit" value="Delete">Delete &#x1F5D1</button>
             <a href=/urls/<%=url%>/edit>Edit</a>
           </form>
         <% }; %>
+
+         <br/><br/><a href=/urls/new>Add new URL</a>
+
+
       </ul>
   </body>
 </html>
