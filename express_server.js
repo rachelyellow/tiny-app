@@ -16,27 +16,9 @@ app.use(cookieSession({
 app.set('view engine', 'ejs');
 
 
-const urlDatabase = {
-//   userRandomID: {
-//     "b2xVn2": "http://www.lighthouselabs.ca",
-//     "9sm5xK": "http://www.google.com",
-//   }
-};
+const urlDatabase = {};
 
-
-const users = {
-  // "userRandomID": {
-  //   id: "userRandomID",
-  //   email: "user@example.com",
-  //   password: "purple-monkey-dinosaur"
-  // },
-
-  // "user2RandomID": {
-  //   id: "user2RandomID",
-  //   email: "user2@example.com",
-  //   password: "dishwasher-funk"
-  // }
-};
+const users = {};
 
 generateRandomString = () => Math.random().toString(36).substring(2, 8)
 
