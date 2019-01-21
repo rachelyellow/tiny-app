@@ -17,27 +17,26 @@ app.set('view engine', 'ejs');
 
 
 const urlDatabase = {
-  userRandomID: {
-    "b2xVn2": "http://www.lighthouselabs.ca",
-    "9sm5xK": "http://www.google.com",
-  }
+//   userRandomID: {
+//     "b2xVn2": "http://www.lighthouselabs.ca",
+//     "9sm5xK": "http://www.google.com",
+//   }
 };
 
 
 const users = {
-  "userRandomID": {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur"
-  },
+  // "userRandomID": {
+  //   id: "userRandomID",
+  //   email: "user@example.com",
+  //   password: "purple-monkey-dinosaur"
+  // },
 
-  "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk"
-  }
-
-}
+  // "user2RandomID": {
+  //   id: "user2RandomID",
+  //   email: "user2@example.com",
+  //   password: "dishwasher-funk"
+  // }
+};
 
 generateRandomString = () => Math.random().toString(36).substring(2, 8)
 
@@ -59,7 +58,7 @@ app.get("/urls", (req, res) => {
 
   //ignore existing cookies if they don't correspond with a user in user database
   if (users[req.session.user_id] === undefined) {
-    res.send('Please log in or register.');
+    res.redirect('/login');
   } else {
     res.render("urls_index", templateVars);
   }
@@ -124,7 +123,7 @@ app.get(`/urls/:id/edit`, (req, res) => {
 
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
-  urlDatabase[req.session.user_id][shortURL] = req.body.longURL;
+  urlDatabase[req.session.user_id][shortURL] = 'http://' + req.body.longURL;
   let templateVars = {
     longURL: req.body.longURL,
     shortURL: shortURL
@@ -142,7 +141,7 @@ app.post("/urls/:id/delete", (req, res) => {
 
 app.post("/urls/:id/edit", (req, res) => {
   if (req.params.id in urlsForUser(req.session.user_id)) {
-    urlDatabase[req.session.user_id][req.params.id] = req.body.longURL;
+    urlDatabase[req.session.user_id][req.params.id] = 'http://' + req.body.longURL;
     res.redirect('/urls');
   } else {
     res.status(403).send('Invalid link.');

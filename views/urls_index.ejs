@@ -10,11 +10,12 @@
         Your shortened URLS: <br/><br/>
 
         <% for (url in urls) { %>
-          <li><%= urls[url] %> - <%= url %></li>
+          <li><%= urls[url] %> - <a href=/u/<%=url%>><%=url%></a></li>
           <form method="POST" action="/urls/<%=url%>/delete" style="margin:5px;>
-            <button type="submit" value="Delete">Delete &#x1F5D1</button>
+            <id="button"><button id="button">Delete &#x1F5D1</button>
             <a href=/urls/<%=url%>/edit>Edit</a>
           </form>
+            <br/>
         <% }; %>
 
          <br/><br/><a href=/urls/new>Add new URL</a>
